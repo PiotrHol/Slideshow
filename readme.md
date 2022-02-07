@@ -1,9 +1,19 @@
 # Slideshow
 
-Prosty skrypt wraz z przykładową stroną, zawierający logikę automatycznego pokazu slajdów z możliwością ręcznego sterowania. Wersja dystrybucyjna znajduje się w folderze ```docs```.  Do konwersji plików wykorzystany został Webpack.
+Przykładowy skrypt umożliwiający zamianę serii zdjęć w automatyczny pokaz slajdów. Dodatkowo skrypt umożliwia ręczną zmianę aktualnego obrazu.
 
-A simple script with an example page. Script contains automatic slideshow logic with manual control. The distribution version is in ```docs``` folder. To covert files, Webpack was used.
+Sample script for turning a series of images into an automatic slideshow. Additionally the script allows you to manually change the current image.
 
 ## Demo
 
 https://piotrhol.github.io/Slideshow/
+
+## Technologies
+
+HTML, Sass, JavaScript, Webpack
+
+## Example screenshot
+
+- Main view
+
+<img src="assets/screenshot1.png" />
