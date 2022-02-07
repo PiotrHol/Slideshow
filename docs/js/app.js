@@ -96,24 +96,24 @@ module.exports = __webpack_require__(2);
 /* 1 */
 /***/ (function(module, exports) {
 
-var photos = document.querySelectorAll(".slideshowBox--image");
-var circles = document.querySelectorAll(".slideshowBox--circle");
+var photos = document.querySelectorAll(".slide-show-box__image");
+var circles = document.querySelectorAll(".slide-show-box__circle");
 var intervalId = autoChangePicture();
 
 function changeClass(toShow, photo, circle) {
   if (toShow) {
-    photo.classList.remove("slideshowBox--image__dnone");
-    circle.classList.add("slideshowBox--circle__active");
+    photo.classList.remove("slide-show-box__image--dnone");
+    circle.classList.add("slide-show-box__circle--active");
   } else {
-    photo.classList.add("slideshowBox--image__dnone");
-    circle.classList.remove("slideshowBox--circle__active");
+    photo.classList.add("slide-show-box__image--dnone");
+    circle.classList.remove("slide-show-box__circle--active");
   }
 }
 
 function autoChangePicture() {
   return setInterval(function () {
     for (var i = 0; i < photos.length; i++) {
-      if (!photos[i].classList.contains("slideshowBox--image__dnone")) {
+      if (!photos[i].classList.contains("slide-show-box__image--dnone")) {
         changeClass(false, photos[i], circles[i]);
         var temp = i + 1;
 
