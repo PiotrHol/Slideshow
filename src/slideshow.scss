@@ -1,0 +1,11 @@
+.slideshow-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+  & > * {
+    display: block;
+    width: 100%;
+  }
+}
