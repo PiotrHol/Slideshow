@@ -8,6 +8,7 @@ type slideshowElement = {
 
 interface Slideshow {
   init: () => void;
+  reloadMaxHeight: () => void;
 }
 
 class SlideshowSlider implements Slideshow {
@@ -53,7 +54,20 @@ class SlideshowSlider implements Slideshow {
           this.slideshowNode.style.height = `${this.maxHeight}px`;
         }
       });
+
+      window.addEventListener("resize", () => this.reloadMaxHeight());
     }
+  }
+
+  reloadMaxHeight() {
+    let tempMaxHeight = 0;
+    for (const slideshowChild of this.slideshowElements) {
+      if (slideshowChild.element.offsetHeight > tempMaxHeight) {
+        tempMaxHeight = slideshowChild.element.offsetHeight;
+      }
+    }
+    this.maxHeight = tempMaxHeight;
+    this.slideshowNode.style.height = `${this.maxHeight}px`;
   }
 }
 
