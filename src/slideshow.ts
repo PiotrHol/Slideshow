@@ -12,16 +12,18 @@ interface Slideshow {
 }
 
 class SlideshowSlider implements Slideshow {
-  private slideshowNode;
+  private slideshowNode: HTMLElement;
   private isInit: boolean;
   private slideshowElements: slideshowElement[];
   private maxHeight: number;
+  private slideshowDiv: HTMLElement;
 
   constructor(slideshowNode: HTMLElement) {
     this.slideshowNode = slideshowNode;
     this.isInit = false;
     this.slideshowElements = [];
     this.maxHeight = 0;
+    this.slideshowDiv = document.createElement("div");
   }
 
   init() {
@@ -48,10 +50,13 @@ class SlideshowSlider implements Slideshow {
           if (slideshowChildData.height > this.maxHeight) {
             this.maxHeight = slideshowChildData.height;
           }
+          this.slideshowDiv.appendChild(slideshowChild);
         }
 
+        this.slideshowNode.appendChild(this.slideshowDiv);
+
         if (this.maxHeight && this.maxHeight > 0) {
-          this.slideshowNode.style.height = `${this.maxHeight}px`;
+          this.slideshowDiv.style.height = `${this.maxHeight}px`;
         }
       });
 
@@ -67,7 +72,7 @@ class SlideshowSlider implements Slideshow {
       }
     }
     this.maxHeight = tempMaxHeight;
-    this.slideshowNode.style.height = `${this.maxHeight}px`;
+    this.slideshowDiv.style.height = `${this.maxHeight}px`;
   }
 }
 
