@@ -9,6 +9,7 @@ type slideshowElement = {
 interface Slideshow {
   init: () => void;
   reloadMaxHeight: () => void;
+  nextSlide: () => void;
 }
 
 class SlideshowSlider implements Slideshow {
@@ -16,6 +17,7 @@ class SlideshowSlider implements Slideshow {
   private isInit: boolean;
   private slideshowElements: slideshowElement[];
   private maxHeight: number;
+  private currentSlide: number;
   private slideshowDiv: HTMLElement;
 
   constructor(slideshowNode: HTMLElement) {
@@ -23,6 +25,7 @@ class SlideshowSlider implements Slideshow {
     this.isInit = false;
     this.slideshowElements = [];
     this.maxHeight = 0;
+    this.currentSlide = 0;
     this.slideshowDiv = document.createElement("div");
   }
 
@@ -73,6 +76,13 @@ class SlideshowSlider implements Slideshow {
     }
     this.maxHeight = tempMaxHeight;
     this.slideshowDiv.style.height = `${this.maxHeight}px`;
+  }
+
+  nextSlide() {
+    this.slideshowDiv.style.transform = `translateX(-${
+      this.slideshowElements[this.currentSlide + 1].width
+    }px)`;
+    this.currentSlide += 1;
   }
 }
 
