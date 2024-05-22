@@ -1,4 +1,6 @@
 const slideshowContainerClass = "slideshow-container";
+const slideshowLeftArrowClass = "slideshow-left-arrow";
+const slideshowRightArrowClass = "slideshow-right-arrow";
 
 type slideshowElement = {
   element: HTMLElement;
@@ -61,6 +63,26 @@ class SlideshowSlider implements Slideshow {
         if (this.maxHeight && this.maxHeight > 0) {
           this.slideshowDiv.style.height = `${this.maxHeight}px`;
         }
+
+        const leftArrow = document.createElement("div");
+        leftArrow.classList.add(
+          slideshowLeftArrowClass,
+          `${slideshowLeftArrowClass}-js`
+        );
+        this.slideshowNode.appendChild(leftArrow);
+        const rightArrow = document.createElement("div");
+        rightArrow.classList.add(
+          slideshowRightArrowClass,
+          `${slideshowRightArrowClass}-js`
+        );
+        this.slideshowNode.appendChild(rightArrow);
+
+        const rightArrowElement = this.slideshowNode.querySelector(
+          `.${slideshowRightArrowClass}-js`
+        );
+        if (rightArrowElement) {
+          rightArrowElement.addEventListener("click", () => this.nextSlide());
+        }
       });
 
       window.addEventListener("resize", () => this.reloadMaxHeight());
@@ -79,10 +101,16 @@ class SlideshowSlider implements Slideshow {
   }
 
   nextSlide() {
-    this.slideshowDiv.style.transform = `translateX(-${
-      this.slideshowElements[this.currentSlide + 1].width
-    }px)`;
-    this.currentSlide += 1;
+    if (this.currentSlide + 1 < this.slideshowElements.length) {
+      this.currentSlide += 1;
+      let newTranslateValue = 0;
+      for (let i = 0; i < this.slideshowElements.length; i++) {
+        if (i < this.currentSlide) {
+          newTranslateValue += this.slideshowElements[i].width;
+        }
+      }
+      this.slideshowDiv.style.transform = `translateX(-${newTranslateValue}px)`;
+    }
   }
 }
 
