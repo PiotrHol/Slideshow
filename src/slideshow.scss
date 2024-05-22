@@ -1,11 +1,15 @@
 .slideshow-container {
   width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
   overflow-x: hidden;
-  & > * {
+  * {
     display: block;
     width: 100%;
+  }
+  & > div {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    transform: translateX(0);
+    transition: transform 0.7s ease-out;
   }
 }
