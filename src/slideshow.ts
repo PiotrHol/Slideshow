@@ -11,7 +11,8 @@ type slideshowElement = {
 interface Slideshow {
   init: () => void;
   reloadMaxHeight: () => void;
-  nextSlide: () => void;
+  checkSlide: (a: number) => void;
+  setSlide: (a: number) => void;
 }
 
 class SlideshowSlider implements Slideshow {
@@ -77,15 +78,28 @@ class SlideshowSlider implements Slideshow {
         );
         this.slideshowNode.appendChild(rightArrow);
 
+        const leftArrowElement = this.slideshowNode.querySelector(
+          `.${slideshowLeftArrowClass}-js`
+        );
+        if (leftArrowElement) {
+          leftArrowElement.addEventListener("click", () =>
+            this.setSlide(this.currentSlide - 1)
+          );
+        }
         const rightArrowElement = this.slideshowNode.querySelector(
           `.${slideshowRightArrowClass}-js`
         );
         if (rightArrowElement) {
-          rightArrowElement.addEventListener("click", () => this.nextSlide());
+          rightArrowElement.addEventListener("click", () =>
+            this.setSlide(this.currentSlide + 1)
+          );
         }
       });
 
       window.addEventListener("resize", () => this.reloadMaxHeight());
+      window.addEventListener("orientationchange", () =>
+        this.reloadMaxHeight()
+      );
     }
   }
 
@@ -100,17 +114,31 @@ class SlideshowSlider implements Slideshow {
     this.slideshowDiv.style.height = `${this.maxHeight}px`;
   }
 
-  nextSlide() {
-    if (this.currentSlide + 1 < this.slideshowElements.length) {
-      this.currentSlide += 1;
-      let newTranslateValue = 0;
-      for (let i = 0; i < this.slideshowElements.length; i++) {
-        if (i < this.currentSlide) {
-          newTranslateValue += this.slideshowElements[i].width;
-        }
-      }
-      this.slideshowDiv.style.transform = `translateX(-${newTranslateValue}px)`;
+  checkSlide(slideNumber: number) {
+    if (
+      slideNumber > this.currentSlide &&
+      slideNumber < this.slideshowElements.length
+    ) {
+      return true;
     }
+    if (slideNumber < this.currentSlide && slideNumber >= 0) {
+      return true;
+    }
+    return false;
+  }
+
+  setSlide(slideNumber: number) {
+    let newTranslateValue = 0;
+    if (!this.checkSlide(slideNumber)) {
+      return;
+    }
+    this.currentSlide = slideNumber;
+    for (let i = 0; i < this.slideshowElements.length; i++) {
+      if (i < this.currentSlide) {
+        newTranslateValue += this.slideshowElements[i].width;
+      }
+    }
+    this.slideshowDiv.style.transform = `translateX(-${newTranslateValue}px)`;
   }
 }
 
