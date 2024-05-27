@@ -1,3 +1,4 @@
+const slideshowHiddenClass = "slideshow-hidden";
 const slideshowContainerClass = "slideshow-container";
 const slideshowLeftArrowClass = "slideshow-left-arrow";
 const slideshowRightArrowClass = "slideshow-right-arrow";
@@ -13,6 +14,7 @@ interface Slideshow {
   reloadMaxHeightAndWidths: () => void;
   checkSlide: (a: number) => void;
   setSlide: (a: number) => void;
+  toggleArrow: () => void;
 }
 
 class SlideshowSlider implements Slideshow {
@@ -94,6 +96,7 @@ class SlideshowSlider implements Slideshow {
             this.setSlide(this.currentSlide + 1)
           );
         }
+        this.toggleArrow();
       });
 
       window.addEventListener("resize", () => this.reloadMaxHeightAndWidths());
@@ -143,6 +146,30 @@ class SlideshowSlider implements Slideshow {
       }
     }
     this.slideshowDiv.style.transform = `translateX(-${newTranslateValue}px)`;
+    this.toggleArrow();
+  }
+
+  toggleArrow() {
+    const leftArrowElement = this.slideshowNode.querySelector(
+      `.${slideshowLeftArrowClass}-js`
+    );
+    const rightArrowElement = this.slideshowNode.querySelector(
+      `.${slideshowRightArrowClass}-js`
+    );
+    if (leftArrowElement && rightArrowElement) {
+      if (this.currentSlide === 0) {
+        leftArrowElement.classList.add(slideshowHiddenClass);
+        rightArrowElement.classList.remove(slideshowHiddenClass);
+        return;
+      }
+      if (this.currentSlide === this.slideshowElements.length - 1) {
+        leftArrowElement.classList.remove(slideshowHiddenClass);
+        rightArrowElement.classList.add(slideshowHiddenClass);
+        return;
+      }
+      leftArrowElement.classList.remove(slideshowHiddenClass);
+      rightArrowElement.classList.remove(slideshowHiddenClass);
+    }
   }
 }
 
