@@ -10,7 +10,7 @@ type slideshowElement = {
 
 interface Slideshow {
   init: () => void;
-  reloadMaxHeight: () => void;
+  reloadMaxHeightAndWidths: () => void;
   checkSlide: (a: number) => void;
   setSlide: (a: number) => void;
 }
@@ -96,14 +96,14 @@ class SlideshowSlider implements Slideshow {
         }
       });
 
-      window.addEventListener("resize", () => this.reloadMaxHeight());
+      window.addEventListener("resize", () => this.reloadMaxHeightAndWidths());
       window.addEventListener("orientationchange", () =>
-        this.reloadMaxHeight()
+        this.reloadMaxHeightAndWidths()
       );
     }
   }
 
-  reloadMaxHeight() {
+  reloadMaxHeightAndWidths() {
     let tempMaxHeight = 0;
     for (const slideshowChild of this.slideshowElements) {
       if (slideshowChild.element.offsetHeight > tempMaxHeight) {
@@ -112,6 +112,10 @@ class SlideshowSlider implements Slideshow {
     }
     this.maxHeight = tempMaxHeight;
     this.slideshowDiv.style.height = `${this.maxHeight}px`;
+    for (const slideElement of this.slideshowElements) {
+      slideElement.height = slideElement.element.offsetHeight;
+      slideElement.width = slideElement.element.offsetWidth;
+    }
   }
 
   checkSlide(slideNumber: number) {
