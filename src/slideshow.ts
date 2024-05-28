@@ -15,6 +15,7 @@ interface Slideshow {
   checkSlide: (a: number) => void;
   setSlide: (a: number) => void;
   toggleArrow: () => void;
+  autoplay: (a: number) => void;
 }
 
 class SlideshowSlider implements Slideshow {
@@ -24,6 +25,7 @@ class SlideshowSlider implements Slideshow {
   private maxHeight: number;
   private currentSlide: number;
   private slideshowDiv: HTMLElement;
+  private isAutoplay: boolean;
 
   constructor(slideshowNode: HTMLElement) {
     this.slideshowNode = slideshowNode;
@@ -32,6 +34,7 @@ class SlideshowSlider implements Slideshow {
     this.maxHeight = 0;
     this.currentSlide = 0;
     this.slideshowDiv = document.createElement("div");
+    this.isAutoplay = false;
   }
 
   init() {
@@ -97,6 +100,24 @@ class SlideshowSlider implements Slideshow {
           );
         }
         this.toggleArrow();
+
+        if (
+          this.slideshowNode.dataset.autoplay &&
+          this.slideshowNode.dataset.autoplay === "true"
+        ) {
+          this.isAutoplay = true;
+        }
+        let intervalTime = 0;
+        if (this.slideshowNode.dataset.interval) {
+          intervalTime = Number(this.slideshowNode.dataset.interval);
+        }
+        if (this.isAutoplay) {
+          if (!Number.isNaN(intervalTime) && intervalTime > 0) {
+            this.autoplay(intervalTime);
+          } else {
+            this.autoplay();
+          }
+        }
       });
 
       window.addEventListener("resize", () => this.reloadMaxHeightAndWidths());
@@ -171,6 +192,12 @@ class SlideshowSlider implements Slideshow {
       leftArrowElement.classList.remove(slideshowHiddenClass);
       rightArrowElement.classList.remove(slideshowHiddenClass);
     }
+  }
+
+  autoplay(time: number = 5000) {
+    const intervalId = setInterval(() => {
+      this.setSlide(this.currentSlide + 1);
+    }, time);
   }
 }
 
