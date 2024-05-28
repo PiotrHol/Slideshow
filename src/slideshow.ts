@@ -119,6 +119,7 @@ class SlideshowSlider implements Slideshow {
       slideElement.height = slideElement.element.offsetHeight;
       slideElement.width = slideElement.element.offsetWidth;
     }
+    this.setSlide(this.currentSlide);
   }
 
   checkSlide(slideNumber: number) {
@@ -128,7 +129,7 @@ class SlideshowSlider implements Slideshow {
     ) {
       return true;
     }
-    if (slideNumber < this.currentSlide && slideNumber >= 0) {
+    if (slideNumber <= this.currentSlide && slideNumber >= 0) {
       return true;
     }
     return false;
