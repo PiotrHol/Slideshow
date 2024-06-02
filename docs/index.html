@@ -58,6 +58,10 @@
         margin: 12px 0;
         font-size: 18px;
       }
+      .slideshow-image-box {
+        padding: 0 5px;
+        box-sizing: border-box;
+      }
       .slideshow-image {
         box-sizing: border-box;
         border: 8px solid #e6e6e6;
@@ -94,7 +98,29 @@
         <ul class="content-title">
           <li>Multiple elements</li>
         </ul>
-        <div class=""></div>
+        <div
+          class="slideshow-container"
+          data-max-width="1080"
+          data-multiple-elements="3"
+          data-multiple-elements-mobile="2"
+          data-infinity="true"
+        >
+          <div class="slideshow-image-box">
+            <img src="./assets/pic01.jpg" class="slideshow-image" alt="pic01" />
+          </div>
+          <div class="slideshow-image-box">
+            <img src="./assets/pic02.jpg" class="slideshow-image" alt="pic02" />
+          </div>
+          <div class="slideshow-image-box">
+            <img src="./assets/pic03.jpg" class="slideshow-image" alt="pic03" />
+          </div>
+          <div class="slideshow-image-box">
+            <img src="./assets/pic01.jpg" class="slideshow-image" alt="pic01" />
+          </div>
+          <div class="slideshow-image-box">
+            <img src="./assets/pic02.jpg" class="slideshow-image" alt="pic02" />
+          </div>
+        </div>
         <ul class="content-title">
           <li>Autoplay</li>
         </ul>
