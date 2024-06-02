@@ -1,5 +1,6 @@
 const slideshowHiddenClass = "slideshow-hidden";
 const slideshowContainerClass = "slideshow-container";
+const slideshowBoxClass = "slideshow-box";
 const slideshowLeftArrowClass = "slideshow-left-arrow";
 const slideshowRightArrowClass = "slideshow-right-arrow";
 
@@ -27,6 +28,8 @@ class SlideshowSlider implements Slideshow {
   private slideshowDiv: HTMLElement;
   private isAutoplay: boolean;
   private isInfinity: boolean;
+  private multipleElements: number;
+  private multipleElementsMobile: number;
 
   constructor(slideshowNode: HTMLElement) {
     this.slideshowNode = slideshowNode;
@@ -35,8 +38,11 @@ class SlideshowSlider implements Slideshow {
     this.maxHeight = 0;
     this.currentSlide = 0;
     this.slideshowDiv = document.createElement("div");
+    this.slideshowDiv.classList.add(slideshowBoxClass);
     this.isAutoplay = false;
     this.isInfinity = false;
+    this.multipleElements = 1;
+    this.multipleElementsMobile = 1;
   }
 
   init() {
@@ -49,9 +55,41 @@ class SlideshowSlider implements Slideshow {
           )}px`;
         }
 
+        if (
+          this.slideshowNode.dataset.multipleElements &&
+          !Number.isNaN(Number(this.slideshowNode.dataset.multipleElements))
+        ) {
+          this.multipleElements = Number(
+            this.slideshowNode.dataset.multipleElements
+          );
+        }
+
+        if (
+          this.slideshowNode.dataset.multipleElementsMobile &&
+          !Number.isNaN(
+            Number(this.slideshowNode.dataset.multipleElementsMobile)
+          )
+        ) {
+          this.multipleElementsMobile = Number(
+            this.slideshowNode.dataset.multipleElementsMobile
+          );
+        }
+
         const slideshowChildren = Array.from(
           this.slideshowNode.children
         ) as HTMLElement[];
+
+        const calcMultipleElements =
+          window.innerWidth > 768
+            ? this.multipleElements
+            : this.multipleElementsMobile;
+
+        if (this.multipleElements > 1 || this.multipleElementsMobile > 1) {
+          slideshowChildren.forEach(
+            (slide) =>
+              (slide.style.width = `calc(100% / ${calcMultipleElements})`)
+          );
+        }
 
         for (const slideshowChild of slideshowChildren) {
           const slideshowChildData = {
@@ -138,7 +176,14 @@ class SlideshowSlider implements Slideshow {
 
   reloadMaxHeightAndWidths() {
     let tempMaxHeight = 0;
+    const calcMultipleElements =
+      window.innerWidth > 768
+        ? this.multipleElements
+        : this.multipleElementsMobile;
     for (const slideshowChild of this.slideshowElements) {
+      if (this.multipleElements > 1 || this.multipleElementsMobile > 1) {
+        slideshowChild.element.style.width = `calc(100% / ${calcMultipleElements})`;
+      }
       if (slideshowChild.element.offsetHeight > tempMaxHeight) {
         tempMaxHeight = slideshowChild.element.offsetHeight;
       }
@@ -170,10 +215,18 @@ class SlideshowSlider implements Slideshow {
     if (!this.checkSlide(slideNumber) && !this.isInfinity) {
       return;
     }
-    if (this.isInfinity && slideNumber >= this.slideshowElements.length) {
+    let endNumberCondition = this.slideshowElements.length;
+    const conditionMultipleElements =
+      window.innerWidth > 768
+        ? this.multipleElements
+        : this.multipleElementsMobile;
+    if (this.multipleElements > 1 || this.multipleElementsMobile > 1) {
+      endNumberCondition = endNumberCondition - conditionMultipleElements + 1;
+    }
+    if (this.isInfinity && slideNumber >= endNumberCondition) {
       this.currentSlide = 0;
     } else if (this.isInfinity && slideNumber < 0) {
-      this.currentSlide = this.slideshowElements.length - 1;
+      this.currentSlide = endNumberCondition - 1;
     } else {
       this.currentSlide = slideNumber;
     }
