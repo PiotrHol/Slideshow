@@ -26,6 +26,7 @@ class SlideshowSlider implements Slideshow {
   private currentSlide: number;
   private slideshowDiv: HTMLElement;
   private isAutoplay: boolean;
+  private isInfinity: boolean;
 
   constructor(slideshowNode: HTMLElement) {
     this.slideshowNode = slideshowNode;
@@ -35,6 +36,7 @@ class SlideshowSlider implements Slideshow {
     this.currentSlide = 0;
     this.slideshowDiv = document.createElement("div");
     this.isAutoplay = false;
+    this.isInfinity = false;
   }
 
   init() {
@@ -102,6 +104,13 @@ class SlideshowSlider implements Slideshow {
         this.toggleArrow();
 
         if (
+          this.slideshowNode.dataset.infinity &&
+          this.slideshowNode.dataset.infinity === "true"
+        ) {
+          this.isInfinity = true;
+        }
+
+        if (
           this.slideshowNode.dataset.autoplay &&
           this.slideshowNode.dataset.autoplay === "true"
         ) {
@@ -158,10 +167,16 @@ class SlideshowSlider implements Slideshow {
 
   setSlide(slideNumber: number) {
     let newTranslateValue = 0;
-    if (!this.checkSlide(slideNumber)) {
+    if (!this.checkSlide(slideNumber) && !this.isInfinity) {
       return;
     }
-    this.currentSlide = slideNumber;
+    if (this.isInfinity && slideNumber >= this.slideshowElements.length) {
+      this.currentSlide = 0;
+    } else if (this.isInfinity && slideNumber < 0) {
+      this.currentSlide = this.slideshowElements.length - 1;
+    } else {
+      this.currentSlide = slideNumber;
+    }
     for (let i = 0; i < this.slideshowElements.length; i++) {
       if (i < this.currentSlide) {
         newTranslateValue += this.slideshowElements[i].width;
@@ -179,12 +194,15 @@ class SlideshowSlider implements Slideshow {
       `.${slideshowRightArrowClass}-js`
     );
     if (leftArrowElement && rightArrowElement) {
-      if (this.currentSlide === 0) {
+      if (this.currentSlide === 0 && !this.isInfinity) {
         leftArrowElement.classList.add(slideshowHiddenClass);
         rightArrowElement.classList.remove(slideshowHiddenClass);
         return;
       }
-      if (this.currentSlide === this.slideshowElements.length - 1) {
+      if (
+        this.currentSlide === this.slideshowElements.length - 1 &&
+        !this.isInfinity
+      ) {
         leftArrowElement.classList.remove(slideshowHiddenClass);
         rightArrowElement.classList.add(slideshowHiddenClass);
         return;
@@ -197,6 +215,12 @@ class SlideshowSlider implements Slideshow {
   autoplay(time: number = 5000) {
     const intervalId = setInterval(() => {
       this.setSlide(this.currentSlide + 1);
+      if (
+        !this.isInfinity &&
+        this.currentSlide === this.slideshowElements.length - 1
+      ) {
+        clearInterval(intervalId);
+      }
     }, time);
   }
 }
