@@ -33,9 +33,6 @@
   cursor: pointer;
   transition: opacity 0.3s linear;
   -webkit-tap-highlight-color: transparent;
-  &:hover {
-    opacity: 1;
-  }
   &::after,
   &::before {
     content: "";
@@ -50,7 +47,6 @@
   }
   @media screen and (max-width: 768px) {
     width: 70px;
-    opacity: 1;
     &::after,
     &::before {
       width: 15px;
@@ -94,6 +90,15 @@
     }
     &::before {
       transform: translateX(-50%) translateY(190%) rotate(135deg);
+    }
+  }
+}
+
+@media (hover: hover) {
+  .slideshow-left-arrow,
+  .slideshow-right-arrow {
+    &:hover {
+      opacity: 1;
     }
   }
 }
