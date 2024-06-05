@@ -139,7 +139,6 @@ class SlideshowSlider implements Slideshow {
             this.setSlide(this.currentSlide + 1)
           );
         }
-        this.toggleArrow();
 
         if (
           this.slideshowNode.dataset.infinity &&
@@ -165,6 +164,8 @@ class SlideshowSlider implements Slideshow {
             this.autoplay();
           }
         }
+
+        this.toggleArrow();
       });
 
       window.addEventListener("resize", () => this.reloadMaxHeightAndWidths());
