@@ -17,6 +17,8 @@ interface Slideshow {
   setSlide: (a: number) => void;
   toggleArrow: () => void;
   autoplay: (a: number) => void;
+  touchStartEventHandler: (e: TouchEvent) => void;
+  touchEndEventHandler: (e: TouchEvent) => void;
 }
 
 class SlideshowSlider implements Slideshow {
@@ -30,6 +32,7 @@ class SlideshowSlider implements Slideshow {
   private isInfinity: boolean;
   private multipleElements: number;
   private multipleElementsMobile: number;
+  private touchCoordinatesX: number;
 
   constructor(slideshowNode: HTMLElement) {
     this.slideshowNode = slideshowNode;
@@ -43,6 +46,7 @@ class SlideshowSlider implements Slideshow {
     this.isInfinity = false;
     this.multipleElements = 1;
     this.multipleElementsMobile = 1;
+    this.touchCoordinatesX = 0;
   }
 
   init() {
@@ -166,6 +170,15 @@ class SlideshowSlider implements Slideshow {
         }
 
         this.toggleArrow();
+
+        this.slideshowNode.addEventListener(
+          "touchstart",
+          this.touchStartEventHandler
+        );
+        this.slideshowNode.addEventListener(
+          "touchend",
+          this.touchEndEventHandler
+        );
       });
 
       window.addEventListener("resize", () => this.reloadMaxHeightAndWidths());
@@ -277,6 +290,19 @@ class SlideshowSlider implements Slideshow {
       }
     }, time);
   }
+
+  touchStartEventHandler = (event: TouchEvent) => {
+    this.touchCoordinatesX = event.changedTouches[0].clientX;
+  };
+
+  touchEndEventHandler = (event: TouchEvent) => {
+    const touchEndCoordinatesX = event.changedTouches[0].clientX;
+    if (touchEndCoordinatesX > this.touchCoordinatesX + 60) {
+      this.setSlide(this.currentSlide - 1);
+    } else if (touchEndCoordinatesX + 60 < this.touchCoordinatesX) {
+      this.setSlide(this.currentSlide + 1);
+    }
+  };
 }
 
 const nodeSlideshowsContainers: NodeListOf<HTMLElement> =
