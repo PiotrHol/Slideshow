@@ -4,6 +4,7 @@ const slideshowBoxClass = "slideshow-box";
 const slideshowLeftArrowClass = "slideshow-left-arrow";
 const slideshowRightArrowClass = "slideshow-right-arrow";
 const slideshowDotsClass = "slideshow-dots";
+const activeDotsClass = "active-dot";
 
 type slideshowElement = {
   element: HTMLElement;
@@ -17,6 +18,7 @@ interface Slideshow {
   checkSlide: (a: number) => void;
   setSlide: (a: number) => void;
   toggleArrow: () => void;
+  toggleDots: () => void;
   autoplay: (a: number) => void;
   touchStartEventHandler: (e: TouchEvent) => void;
   touchEndEventHandler: (e: TouchEvent) => void;
@@ -157,13 +159,14 @@ class SlideshowSlider implements Slideshow {
           this.toggleArrow();
         } else {
           const dotsBox = document.createElement("div");
-          dotsBox.classList.add(slideshowDotsClass);
+          dotsBox.classList.add(slideshowDotsClass, `${slideshowDotsClass}-js`);
           for (let i = 0; i < this.slideshowElements.length; i++) {
             const dotDiv = document.createElement("div");
             dotDiv.addEventListener("click", () => this.setSlide(i));
             dotsBox.appendChild(dotDiv);
           }
           this.slideshowNode.appendChild(dotsBox);
+          this.toggleDots();
         }
 
         if (
@@ -229,6 +232,9 @@ class SlideshowSlider implements Slideshow {
       slideElement.width = slideElement.element.offsetWidth;
     }
     this.setSlide(this.currentSlide);
+    if (!this.isArrowNavigation) {
+      this.toggleDots();
+    }
   }
 
   checkSlide(slideNumber: number) {
@@ -272,6 +278,8 @@ class SlideshowSlider implements Slideshow {
     this.slideshowDiv.style.transform = `translateX(-${newTranslateValue}px)`;
     if (this.isArrowNavigation) {
       this.toggleArrow();
+    } else {
+      this.toggleDots();
     }
   }
 
@@ -298,6 +306,23 @@ class SlideshowSlider implements Slideshow {
       }
       leftArrowElement.classList.remove(slideshowHiddenClass);
       rightArrowElement.classList.remove(slideshowHiddenClass);
+    }
+  }
+
+  toggleDots() {
+    const dotElements = this.slideshowNode.querySelector(
+      `.${slideshowDotsClass}-js`
+    )?.children;
+    if (dotElements) {
+      for (let i = 0; i < dotElements.length; i++) {
+        if (this.currentSlide === i) {
+          if (!dotElements[i].classList.contains(activeDotsClass)) {
+            dotElements[i].classList.add(activeDotsClass);
+          }
+          continue;
+        }
+        dotElements[i].classList.remove(activeDotsClass);
+      }
     }
   }
 
