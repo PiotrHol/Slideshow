@@ -3,6 +3,7 @@ const slideshowContainerClass = "slideshow-container";
 const slideshowBoxClass = "slideshow-box";
 const slideshowLeftArrowClass = "slideshow-left-arrow";
 const slideshowRightArrowClass = "slideshow-right-arrow";
+const slideshowDotsClass = "slideshow-dots";
 
 type slideshowElement = {
   element: HTMLElement;
@@ -33,6 +34,7 @@ class SlideshowSlider implements Slideshow {
   private multipleElements: number;
   private multipleElementsMobile: number;
   private touchCoordinatesX: number;
+  private isArrowNavigation: boolean;
 
   constructor(slideshowNode: HTMLElement) {
     this.slideshowNode = slideshowNode;
@@ -47,6 +49,7 @@ class SlideshowSlider implements Slideshow {
     this.multipleElements = 1;
     this.multipleElementsMobile = 1;
     this.touchCoordinatesX = 0;
+    this.isArrowNavigation = true;
   }
 
   init() {
@@ -77,6 +80,13 @@ class SlideshowSlider implements Slideshow {
           this.multipleElementsMobile = Number(
             this.slideshowNode.dataset.multipleElementsMobile
           );
+        }
+
+        if (
+          this.slideshowNode.dataset.dotsNav &&
+          this.slideshowNode.dataset.dotsNav === "true"
+        ) {
+          this.isArrowNavigation = false;
         }
 
         const slideshowChildren = Array.from(
@@ -114,34 +124,46 @@ class SlideshowSlider implements Slideshow {
           this.slideshowDiv.style.height = `${this.maxHeight}px`;
         }
 
-        const leftArrow = document.createElement("div");
-        leftArrow.classList.add(
-          slideshowLeftArrowClass,
-          `${slideshowLeftArrowClass}-js`
-        );
-        this.slideshowNode.appendChild(leftArrow);
-        const rightArrow = document.createElement("div");
-        rightArrow.classList.add(
-          slideshowRightArrowClass,
-          `${slideshowRightArrowClass}-js`
-        );
-        this.slideshowNode.appendChild(rightArrow);
+        if (this.isArrowNavigation) {
+          const leftArrow = document.createElement("div");
+          leftArrow.classList.add(
+            slideshowLeftArrowClass,
+            `${slideshowLeftArrowClass}-js`
+          );
+          this.slideshowNode.appendChild(leftArrow);
+          const rightArrow = document.createElement("div");
+          rightArrow.classList.add(
+            slideshowRightArrowClass,
+            `${slideshowRightArrowClass}-js`
+          );
+          this.slideshowNode.appendChild(rightArrow);
 
-        const leftArrowElement = this.slideshowNode.querySelector(
-          `.${slideshowLeftArrowClass}-js`
-        );
-        if (leftArrowElement) {
-          leftArrowElement.addEventListener("click", () =>
-            this.setSlide(this.currentSlide - 1)
+          const leftArrowElement = this.slideshowNode.querySelector(
+            `.${slideshowLeftArrowClass}-js`
           );
-        }
-        const rightArrowElement = this.slideshowNode.querySelector(
-          `.${slideshowRightArrowClass}-js`
-        );
-        if (rightArrowElement) {
-          rightArrowElement.addEventListener("click", () =>
-            this.setSlide(this.currentSlide + 1)
+          if (leftArrowElement) {
+            leftArrowElement.addEventListener("click", () =>
+              this.setSlide(this.currentSlide - 1)
+            );
+          }
+          const rightArrowElement = this.slideshowNode.querySelector(
+            `.${slideshowRightArrowClass}-js`
           );
+          if (rightArrowElement) {
+            rightArrowElement.addEventListener("click", () =>
+              this.setSlide(this.currentSlide + 1)
+            );
+          }
+          this.toggleArrow();
+        } else {
+          const dotsBox = document.createElement("div");
+          dotsBox.classList.add(slideshowDotsClass);
+          for (let i = 0; i < this.slideshowElements.length; i++) {
+            const dotDiv = document.createElement("div");
+            dotDiv.addEventListener("click", () => this.setSlide(i));
+            dotsBox.appendChild(dotDiv);
+          }
+          this.slideshowNode.appendChild(dotsBox);
         }
 
         if (
@@ -168,8 +190,6 @@ class SlideshowSlider implements Slideshow {
             this.autoplay();
           }
         }
-
-        this.toggleArrow();
 
         this.slideshowNode.addEventListener(
           "touchstart",
@@ -250,7 +270,9 @@ class SlideshowSlider implements Slideshow {
       }
     }
     this.slideshowDiv.style.transform = `translateX(-${newTranslateValue}px)`;
-    this.toggleArrow();
+    if (this.isArrowNavigation) {
+      this.toggleArrow();
+    }
   }
 
   toggleArrow() {
