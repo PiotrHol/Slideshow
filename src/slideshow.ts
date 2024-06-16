@@ -91,6 +91,25 @@ class SlideshowSlider implements Slideshow {
           this.isArrowNavigation = false;
         }
 
+        if (
+          this.slideshowNode.dataset.infinity &&
+          this.slideshowNode.dataset.infinity === "true"
+        ) {
+          this.isInfinity = true;
+        }
+
+        if (
+          this.slideshowNode.dataset.autoplay &&
+          this.slideshowNode.dataset.autoplay === "true"
+        ) {
+          this.isAutoplay = true;
+        }
+
+        let intervalTime = 0;
+        if (this.slideshowNode.dataset.interval) {
+          intervalTime = Number(this.slideshowNode.dataset.interval);
+        }
+
         const slideshowChildren = Array.from(
           this.slideshowNode.children
         ) as HTMLElement[];
@@ -162,23 +181,6 @@ class SlideshowSlider implements Slideshow {
           this.toggleDots();
         }
 
-        if (
-          this.slideshowNode.dataset.infinity &&
-          this.slideshowNode.dataset.infinity === "true"
-        ) {
-          this.isInfinity = true;
-        }
-
-        if (
-          this.slideshowNode.dataset.autoplay &&
-          this.slideshowNode.dataset.autoplay === "true"
-        ) {
-          this.isAutoplay = true;
-        }
-        let intervalTime = 0;
-        if (this.slideshowNode.dataset.interval) {
-          intervalTime = Number(this.slideshowNode.dataset.interval);
-        }
         if (this.isAutoplay) {
           if (!Number.isNaN(intervalTime) && intervalTime > 0) {
             this.autoplay(intervalTime);
