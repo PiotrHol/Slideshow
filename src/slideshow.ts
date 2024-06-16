@@ -132,30 +132,23 @@ class SlideshowSlider implements Slideshow {
             slideshowLeftArrowClass,
             `${slideshowLeftArrowClass}-js`
           );
+          if (leftArrow) {
+            leftArrow.addEventListener("click", () =>
+              this.setSlide(this.currentSlide - 1)
+            );
+          }
           this.slideshowNode.appendChild(leftArrow);
           const rightArrow = document.createElement("div");
           rightArrow.classList.add(
             slideshowRightArrowClass,
             `${slideshowRightArrowClass}-js`
           );
-          this.slideshowNode.appendChild(rightArrow);
-
-          const leftArrowElement = this.slideshowNode.querySelector(
-            `.${slideshowLeftArrowClass}-js`
-          );
-          if (leftArrowElement) {
-            leftArrowElement.addEventListener("click", () =>
-              this.setSlide(this.currentSlide - 1)
-            );
-          }
-          const rightArrowElement = this.slideshowNode.querySelector(
-            `.${slideshowRightArrowClass}-js`
-          );
-          if (rightArrowElement) {
-            rightArrowElement.addEventListener("click", () =>
+          if (rightArrow) {
+            rightArrow.addEventListener("click", () =>
               this.setSlide(this.currentSlide + 1)
             );
           }
+          this.slideshowNode.appendChild(rightArrow);
           this.toggleArrow();
         } else {
           const dotsBox = document.createElement("div");
